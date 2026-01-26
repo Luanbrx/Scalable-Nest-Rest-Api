@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 
 @Controller('tasks')
@@ -7,12 +7,19 @@ export class TasksController{
 
   @Get()
 getTasks(){
-  return this.tasksService.listAllTasks()
+  return this.tasksService.findAll()
 }
 
-@Get("/1")
-getTest(){
-  return this.tasksService.findOneTask()
+@Get(":id")
+findOneTask(@Param('id') id: string){
+  return this.tasksService.findOn(id);
+}
+
+@Post()
+createTasks(@Body()  body:any){
+  console.log(body)
+
+  return this.tasksService.create(body)
 }
 }
 
