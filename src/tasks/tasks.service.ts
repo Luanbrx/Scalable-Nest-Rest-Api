@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Task } from './entities/tasks.entities';
-import { UpdateTaskDto } from 'src/dto/update-task.dto';
+import { UpdateTaskDto } from 'src/tasks/dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
