@@ -4,9 +4,16 @@ import { AppService } from './app.service';
 import { TaskModule } from 'src/tasks/tasks.module';
 import { UsersModule } from 'src/users/users.module';
 import { LoggerMiddleware } from 'src/common/middlewares/logger.middleware';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TaskModule, UsersModule],
+  imports: [
+    ConfigModule.forRoot(),
+    TaskModule, 
+    UsersModule,
+    AuthModule        
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

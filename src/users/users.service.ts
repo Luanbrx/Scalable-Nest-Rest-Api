@@ -2,10 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { HashingServiceProtocol } from 'src/auth/hash/hashing.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor
+  ( private prisma: PrismaService,
+   private readonly hashingService: HashingServiceProtocol
+  ) { }
 
   async findOne(id: number){
     const user = await this.prisma.user.findFirst ({
@@ -27,11 +31,13 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto){
     try{
+
+      const passwordHash = await this.hashingService.hash(createUserDto.password)
       const user = await this.prisma.user.create({
         data: {
           name: createUserDto.name,
           email: createUserDto.email,
-          passwordHast: createUserDto.password
+          passwordHast: passwordHash
         }, 
         select:{
           id: true,
@@ -60,13 +66,22 @@ export class UsersService {
         throw new HttpException('Usuário não existe!', HttpStatus.BAD_REQUEST)
       }
 
+      const dataUser: {name?: string, passworHash?: string} = {
+        name: updateUserDto.name ? updateUserDto.name : user.name,
+      }
+       
+      if (updateUserDto?.password){
+        const passwordHash = await this.hashingService.hash(updateUserDto?.password)
+        dataUser['passworHash'] = passwordHash
+      }
+
       const updateUser = await this.prisma.user.update({
          where:{
           id: user.id
          },
          data:{
-          name: updateUserDto.name ? updateUserDto.name : user.name,
-          passwordHast: updateUserDto.password ? updateUserDto.password : user.passwordHast
+          name: dataUser.name,
+          passwordHast: dataUser.passworHash ? dataUser?.passworHash : user.passwordHast
          },
          select:{
           id: true,
