@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashingServiceProtocol } from 'src/auth/hash/hashing.service';
+import { PlayloadTokenDto } from './dto/playload-token.dto';
 
 @Injectable()
 export class UsersService {
@@ -54,7 +55,7 @@ export class UsersService {
     }
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto){
+ async update(id: number, updateUserDto: UpdateUserDto, tokenPlayload: PlayloadTokenDto){
     try{
       const user = await this.prisma.user.findFirst({
             where:{
@@ -66,7 +67,11 @@ export class UsersService {
         throw new HttpException('Usuário não existe!', HttpStatus.BAD_REQUEST)
       }
 
-      const dataUser: {name?: string, passworHash?: string} = {
+      if (user.id !== tokenPlayload.sub){
+        throw new HttpException('Acesso negado!', HttpStatus.BAD_REQUEST)
+      }
+
+      const dataUser: {name?: string, passwordHash?: string} = {
         name: updateUserDto.name ? updateUserDto.name : user.name,
       }
        
@@ -81,7 +86,7 @@ export class UsersService {
          },
          data:{
           name: dataUser.name,
-          passwordHast: dataUser.passworHash ? dataUser?.passworHash : user.passwordHast
+          passwordHast: dataUser.passwordHash ? dataUser?.passwordHash : user.passwordHast
          },
          select:{
           id: true,
@@ -98,7 +103,7 @@ export class UsersService {
   }
     }
 
-   async delete (id : number){
+   async delete (id : number, tokenPlayload: PlayloadTokenDto){
       try{
         const user = await this.prisma.user.findFirst({
             where:{
@@ -108,6 +113,10 @@ export class UsersService {
 
       if (!user){
         throw new HttpException('Usuário não existe!', HttpStatus.BAD_REQUEST) 
+      }
+
+      if (user.id !== tokenPlayload.sub){
+        throw new HttpException('Acesso negado!', HttpStatus.BAD_REQUEST)
       }
 
       await this.prisma.user.delete({
