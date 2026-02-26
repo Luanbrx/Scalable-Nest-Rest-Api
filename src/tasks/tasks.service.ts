@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { CreateTaskDto } from './dto/create-task.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PlayloadTokenDto } from 'src/users/dto/playload-token.dto';
+import { ResposeTaskDto } from './dto/response-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -19,7 +20,7 @@ export class TasksService {
     }
   ]
 
-  async findAll(paginationDto?: PaginationDto){
+  async findAll(paginationDto?: PaginationDto): Promise<ResposeTaskDto[]>{
     const {limit = 10, offset = 0} = paginationDto;
 
     const allTasks = await this.prisma.task.findMany({
@@ -32,7 +33,7 @@ export class TasksService {
     return allTasks;
   }
 
-  async findOn(id: number){
+  async findOn(id: number): Promise<ResposeTaskDto>{
     const task = await this.prisma.task.findFirst({
       where: {
         id: id
@@ -44,7 +45,7 @@ export class TasksService {
     throw new HttpException ("Essa tarefa não existe", HttpStatus.NOT_FOUND)
   }
 
-  async create(createTaskDto: CreateTaskDto, tokenPlayload: PlayloadTokenDto){
+  async create(createTaskDto: CreateTaskDto, tokenPlayload: PlayloadTokenDto): Promise<ResposeTaskDto>{
     try{
       const newTask = await this.prisma.task.create({
       data: {
@@ -61,7 +62,7 @@ export class TasksService {
     }
   }
 
-  async update(id: number, updateTaskDto: UpdateTaskDto, tokenPlayload: PlayloadTokenDto){
+  async update(id: number, updateTaskDto: UpdateTaskDto, tokenPlayload: PlayloadTokenDto): Promise<ResposeTaskDto>{
     try{
       const findTask = await this.prisma.task.findFirst({
     where: {

@@ -6,6 +6,7 @@ import { AuthTokenGuard } from 'src/auth/guard/auth-token.guard';
 import { TokenPlayloadParam } from 'src/auth/param/token-playload.param';
 import { PlayloadTokenDto } from './dto/playload-token.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 
 
     @Controller('users')
@@ -13,6 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
       constructor(private readonly userService: UsersService) {}
 
       @Get(':id')
+      @ApiOperation({summary: 'Buscar detalhes de um Usuário'})
       findOneUser(@Param('id', ParseIntPipe) id: number) {
 
         console.log('Token teste:', process.env.TOKEN_KEY)
@@ -20,11 +22,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
       }
       
       @Post()
+      @ApiOperation({summary: 'Cadastrar um novo Usuàrio'})
       createUser(@Body() createUserDto: CreateUserDto){
         return this.userService.create(createUserDto)
       }
 
       @UseGuards(AuthTokenGuard)
+      @ApiBearerAuth()
+      @ApiOperation({summary: 'Atualizar um Usuário'})
       @Patch(':id')
       updatUser(
         @Param('id', ParseIntPipe) id: number, 
@@ -37,6 +42,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
       }
 
       @UseGuards(AuthTokenGuard)
+      @ApiBearerAuth()
+      @ApiOperation({summary: 'Deletar um Usuário'})
       @Delete(':id')
       deleteUser(
         @Param('id', ParseIntPipe ) id: number,
@@ -46,6 +53,20 @@ import { FileInterceptor } from '@nestjs/platform-express';
       }
 
       @UseGuards(AuthTokenGuard)
+      @ApiBearerAuth()
+      @ApiOperation({summary: 'Atualizar foto do Usuário'})
+      @ApiConsumes('multipart/form-data')
+      @ApiBody({
+        schema: {
+          type: 'object',
+          properties: {
+            file: {
+              type: 'string',
+              format: 'binary'
+            }
+          }
+        }
+      })
       @UseInterceptors(FileInterceptor('file'))
       @Post('upload')
        async uploadAvatar(
