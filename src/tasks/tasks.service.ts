@@ -20,18 +20,19 @@ export class TasksService {
     }
   ]
 
-  async findAll(paginationDto?: PaginationDto): Promise<ResposeTaskDto[]>{
-    const {limit = 10, offset = 0} = paginationDto;
+  async findAll(paginationDto?: PaginationDto, userId?: number): Promise<ResposeTaskDto[]>{
+  const {limit = 10, offset = 0} = paginationDto;
 
-    const allTasks = await this.prisma.task.findMany({
-      take: limit,
-      skip: offset,
-      orderBy:{
-        createdAt: "desc"
-      }
-    });
-    return allTasks;
-  }
+  const allTasks = await this.prisma.task.findMany({
+    where: userId ? { userId } : {}, 
+    take: limit,
+    skip: offset,
+    orderBy:{
+      createdAt: "desc"
+    }
+  });
+  return allTasks;
+}
 
   async findOn(id: number): Promise<ResposeTaskDto>{
     const task = await this.prisma.task.findFirst({
@@ -83,9 +84,9 @@ export class TasksService {
         id: findTask.id
       },
       data:{
-        name: updateTaskDto?.name ? updateTaskDto?.name : findTask.name,
-        description: updateTaskDto?.description ? updateTaskDto?.description : findTask.description,
-        completed: updateTaskDto?.completed ? updateTaskDto?.completed : findTask.completed,
+       name: updateTaskDto?.name ?? findTask.name,
+       description: updateTaskDto?.description ?? findTask.description,
+       completed: updateTaskDto?.completed ?? findTask.completed,
       }
     })
     return task;
