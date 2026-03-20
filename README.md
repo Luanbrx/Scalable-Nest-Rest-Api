@@ -1,98 +1,235 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Scalable Nest Rest API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST escalável para gerenciamento de tarefas, construída com NestJS, Prisma ORM e autenticação JWT.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 📚 Documentação
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Com o servidor rodando, acesse a documentação Swagger em:
 
-## Project setup
-
-```bash
-$ npm install
+```
+http://localhost:3001/docs
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## 🚀 Tecnologias
 
-# watch mode
-$ npm run start:dev
+| Tecnologia | Função |
+|---|---|
+| [NestJS](https://nestjs.com/) | Framework Node.js escalável |
+| [TypeScript](https://www.typescriptlang.org/) | Tipagem estática |
+| [Prisma ORM](https://www.prisma.io/) | Acesso ao banco de dados |
+| [SQLite](https://www.sqlite.org/) | Banco de dados local |
+| [JWT](https://jwt.io/) | Autenticação stateless |
+| [bcrypt](https://github.com/kelektiv/node.bcrypt.js) | Hash de senhas |
+| [Multer](https://github.com/expressjs/multer) | Upload de arquivos |
+| [Swagger](https://swagger.io/) | Documentação da API |
+| [class-validator](https://github.com/typestack/class-validator) | Validação de DTOs |
 
-# production mode
-$ npm run start:prod
+---
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── app/                        # Módulo raiz
+├── auth/
+│   ├── common/
+│   │   └── authconstants.ts    # Constantes de autenticação
+│   ├── config/
+│   │   └── jwt.config.ts       # Configuração do JWT
+│   ├── dto/
+│   │   └── signin.dto.ts       # DTO de login
+│   ├── guard/
+│   │   └── auth-token.guard.ts # Guard JWT (valida e decodifica o token)
+│   ├── hash/
+│   │   ├── bcryptService.ts    # Implementação bcrypt
+│   │   └── hashing.service.ts  # Protocolo de hash
+│   ├── param/
+│   │   └── token-playload.param.ts # Decorator para extrair payload do token
+│   ├── auth.controller.ts
+│   ├── auth.module.ts
+│   └── auth.service.ts
+├── common/
+│   ├── dto/
+│   │   └── pagination.dto.ts   # DTO de paginação (limit, offset)
+│   ├── filters/
+│   │   └── exception-filter.ts # Filtro global de exceções
+│   ├── guards/
+│   │   └── admin.guard.ts      # Guard de admin
+│   ├── interceptors/
+│   │   ├── add-header.interceptor.ts
+│   │   ├── body-create-task.interceptor.ts
+│   │   └── logger.interceptor.ts
+│   └── middlewares/
+│       └── logger.middleware.ts
+├── prisma/
+│   ├── prisma.module.ts
+│   └── prisma.service.ts
+├── tasks/
+│   ├── dto/
+│   │   ├── create-task.dto.ts
+│   │   ├── response-task.dto.ts
+│   │   └── update-task.dto.ts
+│   ├── entities/
+│   │   └── tasks.entities.ts
+│   ├── tasks.controller.ts
+│   ├── tasks.module.ts
+│   ├── tasks.service.ts
+│   └── tasks.utils.ts
+├── users/
+│   ├── dto/
+│   │   ├── create-user.dto.ts
+│   │   ├── playload-token.dto.ts
+│   │   ├── response-user.dto.ts
+│   │   └── update-user.dto.ts
+│   ├── users.controller.ts
+│   ├── users.module.ts
+│   └── users.service.ts
+└── main.ts
 ```
 
-## Run tests
+---
+
+## ⚙️ Configuração e Instalação
+
+### Pré-requisitos
+
+- Node.js 20+
+- npm
+
+### Instalação
 
 ```bash
-# unit tests
-$ npm run test
+# Clone o repositório
+git clone https://github.com/Luanbrx/Scalable-Nest-Rest-Api.git
 
-# e2e tests
-$ npm run test:e2e
+# Entre na pasta
+cd Scalable-Nest-Rest-Api
 
-# test coverage
-$ npm run test:cov
+# Instale as dependências
+npm install
 ```
 
-## Deployment
+### Variáveis de Ambiente
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Crie um arquivo `.env` na raiz do projeto:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Banco de dados SQLite
+DATABASE_URL="file:./dev.db"
+
+# JWT
+JWT_SECRET=sua_chave_secreta_aqui
+JWT_TTL=86400
+JWT_AUDIENCE=localhost
+JWT_ISSUER=localhost
+
+# Porta do servidor
+PORT=3001
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Banco de Dados
 
-## Resources
+```bash
+# Gera o cliente Prisma
+npx prisma generate
 
-Check out a few resources that may come in handy when working with NestJS:
+# Roda as migrations
+npx prisma migrate dev
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# (Opcional) Abre o Prisma Studio
+npx prisma studio
+```
 
-## Support
+### Executar em desenvolvimento
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+npm run start:dev
+```
 
-## Stay in touch
+A API estará disponível em `http://localhost:3001`
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 🗂️ Endpoints
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Auth
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| POST | `/auth` | Login do usuário | ❌ |
+
+### Users
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| POST | `/users` | Cadastrar usuário | ❌ |
+| GET | `/users/:id` | Buscar usuário por ID | ❌ |
+| PATCH | `/users/:id` | Atualizar usuário | ✅ |
+| DELETE | `/users/:id` | Deletar usuário | ✅ |
+| POST | `/users/upload` | Atualizar foto do usuário | ✅ |
+
+### Tasks
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| GET | `/tasks` | Listar tarefas do usuário | ✅ |
+| POST | `/tasks` | Criar tarefa | ✅ |
+| GET | `/tasks/:id` | Buscar tarefa por ID | ❌ |
+| PATCH | `/tasks/:id` | Atualizar tarefa | ✅ |
+| DELETE | `/tasks/:id` | Excluir tarefa | ✅ |
+
+---
+
+## 🗄️ Schema do Banco de Dados
+
+```prisma
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  passwordHast String
+  email        String    @unique
+  active       Boolean   @default(true)
+  avatar       String?
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @updatedAt
+  Task         Task[]
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  completed   Boolean   @default(false)
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+```
+
+---
+
+## 🔐 Autenticação
+
+A API usa **JWT (JSON Web Token)**. Para acessar rotas protegidas:
+
+1. Faça login em `POST /auth` com email e senha
+2. Copie o `token` retornado na resposta
+3. Envie o token no header de todas as requisições protegidas:
+
+```
+Authorization: Bearer <seu_token>
+```
+
+---
+
+## 🔗 Repositório do Frontend
+
+[Scalable-Next-Frontend](https://github.com/Luanbrx/Scalable-Next-Frontend)
+
+---
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT.
